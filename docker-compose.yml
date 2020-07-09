@@ -1,0 +1,20 @@
+version: "3.7"
+services:
+  db:
+    build: .
+    volumes:
+      - ./tmp/postgres:/var/lib/postgresql/data
+      - ./conf/postgresql.conf:/var/lib/postgresql/postgresql.conf
+      - ./conf/postgres:/docker-entrypoint-initdb.d
+      - ./tests:/tmp/tests/
+    # Enable pg_stat_statements.
+    command: postgres -c shared_preload_libraries=pg_stat_statements -c pg_stat_statements.track=all -c max_connections=200
+    ports:
+      - $DB_HOST:$DB_PORT:5432
+    environment:
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_USER: $DB_USER
+      POSTGRES_PASSWORD: $DB_PASS
+
+volumes:
+  db: {}
